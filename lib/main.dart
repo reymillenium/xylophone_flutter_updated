@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:quiver/async.dart';
 
@@ -57,27 +56,20 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Notes assignment:
   Map<String, int> musicalNotes = {'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'A': 6, 'B': 7};
-
   // The Twinkle Twinkle Music Sheet
   List<String> twinkleTwinkleMusicSheet = [null, 'C', 'C', 'G', 'G', 'A', 'A', 'G', null, 'F', 'F', 'E', 'E', 'D', 'D', 'C'];
-
-  // add it to your class as a static member
-  // static AudioCache player = AudioCache();
-  // or as a local variable
-  // final player = AudioCache();
   // You can optionally pass a prefix to the constructor if all of your audios are in a specific folder inside the assets folder.
   AudioCache player = AudioCache(prefix: 'assets/audio/');
 
-  void playTwinkleTwinkle() {
-    // Preloads all the audio files (avoids the initial delay):
-    preloadsTheAudioFiles();
+  void playMelody(List<String> musicSheet) {
+    // Plays a deaf sound and avoids the initial delay in the melody:
+    player.play('note1.wav', volume: 0);
 
     final countDownTimer = CountdownTimer(Duration(milliseconds: 7500), Duration(milliseconds: 500));
     countDownTimer.listen((data) {
       int index = countDownTimer.elapsed.inMilliseconds ~/ 500.0;
-      // print(index);
-      if (twinkleTwinkleMusicSheet[index] != null) {
-        playNote(twinkleTwinkleMusicSheet[index]);
+      if (musicSheet[index] != null) {
+        playNote(musicSheet[index]);
       }
     }, onDone: () {
       countDownTimer.cancel();
@@ -87,13 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void preloadsTheAudioFiles() {
     List<String> noteAudioFiles = ['note1.wav', 'note2.wav', 'note3.wav', 'note4.wav', 'note5.wav', 'note6.wav', 'note7.wav'];
     player.loadAll(noteAudioFiles);
-
-    // final countDownTimer = CountdownTimer(Duration(milliseconds: 1500), Duration(milliseconds: 500));
-    // countDownTimer.listen((data) {
-    //   player.loadAll(noteAudioFiles);
-    // }, onDone: () {
-    //   countDownTimer.cancel();
-    // });
   }
 
   void playNote(String note) {
@@ -102,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Preloads all the audio files (avoids the initial delay):
+    // Preloads all the audio files (avoids the initial delay?):
     preloadsTheAudioFiles();
 
     // This method is rerun every time setState is called, for instance as done
@@ -284,7 +269,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: playTwinkleTwinkle,
+        onPressed: () {
+          playMelody(twinkleTwinkleMusicSheet);
+        },
         tooltip: 'Twinkle',
         child: Icon(Icons.play_arrow),
       ), // This trailing comma makes auto-formatting nicer for build methods.
