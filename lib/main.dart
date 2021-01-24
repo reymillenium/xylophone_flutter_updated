@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:audioplayers/audio_cache.dart';
+import 'package:quiver/async.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,8 +54,15 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  // Wrong assignment of notes:
+  // Map<String, int> musicalNotes = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7};
+  // Map<String, int> musicalNotes = {'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'A': 6, 'B': 7};
+  // Map<String, int> musicalNotes = {'B': 1, 'A': 2, 'G': 3, 'F': 4, 'E': 5, 'D': 6, 'C': 7};
 
-  // AudioPlayer audioPlayer = AudioPlayer();
+  Map<String, int> musicalNotes = {'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'A': 6, 'B': 7};
+
+  List<String> twinkleTwinkleMusicSheet = [null, null, 'C', 'C', 'G', 'G', 'A', 'A', 'G', null, 'F', 'F', 'E', 'E', 'D', 'D', 'C'];
+
   // add it to your class as a static member
   // static AudioCache player = AudioCache();
   // or as a local variable
@@ -64,16 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
   AudioCache player = AudioCache(prefix: 'assets/audio/');
 
   void _incrementCounter() {
-    // AudioPlayer.logEnabled = true;
-    // play() async {
-    //   int result = await audioPlayer.play('assets/note1.wav');
-    //   if (result == 1) {
-    //     // success
-    //   }
-    // }
-
     // call this method when desired
-    player.play('note1.wav');
+    // player.play('note1.wav');
+    // playNote('A');
+    playTwinkleTwinkle();
 
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -85,8 +87,43 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void playTwinkleTwinkle() {
+    // Preloads all the audio files (avoids the initial delay):
+    // preloadsTheAudioFiles();
+
+    final countDownTimer = CountdownTimer(Duration(milliseconds: 8000), Duration(milliseconds: 500));
+    countDownTimer.listen((data) {
+      int index = countDownTimer.elapsed.inMilliseconds ~/ 500.0;
+      // print(index);
+      if (twinkleTwinkleMusicSheet[index] != null) {
+        playNote(twinkleTwinkleMusicSheet[index]);
+      }
+    }, onDone: () {
+      countDownTimer.cancel();
+    });
+  }
+
+  void preloadsTheAudioFiles() {
+    List<String> noteAudioFiles = ['note1.wav', 'note2.wav', 'note3.wav', 'note4.wav', 'note5.wav', 'note6.wav', 'note7.wav'];
+    player.loadAll(noteAudioFiles);
+
+    // final countDownTimer = CountdownTimer(Duration(milliseconds: 1500), Duration(milliseconds: 500));
+    // countDownTimer.listen((data) {
+    //   player.loadAll(noteAudioFiles);
+    // }, onDone: () {
+    //   countDownTimer.cancel();
+    // });
+  }
+
+  void playNote(String note) {
+    player.play('note${musicalNotes[note]}.wav');
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Preloads all the audio files (avoids the initial delay):
+    preloadsTheAudioFiles();
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
