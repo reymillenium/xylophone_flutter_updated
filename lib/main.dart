@@ -56,9 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // AudioPlayer audioPlayer = AudioPlayer();
   // add it to your class as a static member
-  static AudioCache player = AudioCache();
+  // static AudioCache player = AudioCache();
   // or as a local variable
   // final player = AudioCache();
+
+  // You can optionally pass a prefix to the constructor if all of your audios are in a specific folder inside the assets folder.
+  AudioCache player = AudioCache(prefix: 'assets/audio/');
 
   void _incrementCounter() {
     // AudioPlayer.logEnabled = true;
