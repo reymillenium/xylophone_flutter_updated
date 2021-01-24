@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audio_cache.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,7 +54,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  // AudioPlayer audioPlayer = AudioPlayer();
+  // add it to your class as a static member
+  static AudioCache player = AudioCache();
+  // or as a local variable
+  // final player = AudioCache();
+
   void _incrementCounter() {
+    // AudioPlayer.logEnabled = true;
+    // play() async {
+    //   int result = await audioPlayer.play('assets/note1.wav');
+    //   if (result == 1) {
+    //     // success
+    //   }
+    // }
+
+    // call this method when desired
+    player.play('note1.wav');
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
