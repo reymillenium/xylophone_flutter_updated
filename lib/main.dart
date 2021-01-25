@@ -31,16 +31,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, int> musicalNotes = {'C': 1, 'D': 2, 'E': 3, 'F': 4, 'G': 5, 'A': 6, 'B': 7};
   // The Twinkle Twinkle Music Sheet
   List<String> twinkleTwinkleMusicSheet = [null, 'C', 'C', 'G', 'G', 'A', 'A', 'G', null, 'F', 'F', 'E', 'E', 'D', 'D', 'C'];
+  List<String> oldMacDonaldHadAFarmMusicSheet = [null, 'G', 'G', 'G', 'D', 'E', 'E', 'D', null, 'B', 'B', 'A', 'A', 'G', null, null, 'D', 'G', 'G', 'G', 'D', 'E', 'E', 'D', null, 'B', 'B', 'A', 'A', 'G'];
   // You can optionally pass a prefix to the constructor if all of your audios are in a specific folder inside the assets folder.
   AudioCache player = AudioCache(prefix: 'assets/audio/');
 
-  void playMelody(List<String> musicSheet) {
+  void playMelody({List<String> musicSheet, int tempo = 500}) {
     // Plays a deaf sound and avoids the initial delay in the melody:
     playNote(note: 'A', volume: 0);
 
-    final countDownTimer = CountdownTimer(Duration(milliseconds: 7500), Duration(milliseconds: 500));
+    int totalMilliseconds = (musicSheet.length - 1) * tempo;
+
+    final countDownTimer = CountdownTimer(Duration(milliseconds: totalMilliseconds), Duration(milliseconds: tempo));
     countDownTimer.listen((data) {
-      int index = countDownTimer.elapsed.inMilliseconds ~/ 500.0;
+      int index = countDownTimer.elapsed.inMilliseconds ~/ tempo;
       if (musicSheet[index] != null) {
         playNote(note: musicSheet[index]);
       }
@@ -83,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // Preloads all the audio files (helps tp reduce the initial delay?):
-    preloadsTheAudioFiles();
+    // preloadsTheAudioFiles();
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          playMelody(twinkleTwinkleMusicSheet);
+          playMelody(musicSheet: twinkleTwinkleMusicSheet);
+          // playMelody(musicSheet: oldMacDonaldHadAFarmMusicSheet, tempo: 400);
         },
         tooltip: 'Twinkle',
         child: Icon(Icons.play_arrow),
